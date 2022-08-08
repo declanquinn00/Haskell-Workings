@@ -103,3 +103,56 @@ describeList xs = "The list is " ++ case xs of
                                                 [] -> "empty."  
                                                 [x] -> "a singleton list."   
                                                 xs -> "a longer list."  
+
+--Recursion
+--Maximum function using recursion
+maximum' :: (Ord a) => [a] -> a  
+maximum' [] = error "maximum of empty list"  --empty
+maximum' [x] = x  --1 element
+maximum' (x:xs)   --list split into head and tail
+    | x > maxTail = x  
+    | otherwise = maxTail  
+    where maxTail = maximum' xs  --get the tail then recursiveley return
+
+--Replicate function using recursion
+replicate' :: (Num i, Ord i) => i -> a -> [a]  
+replicate' n x  
+    | n <= 0    = []  
+    | otherwise = x:replicate' (n-1) x  --head + n-1 repititions
+
+--Take function using recursion
+take' :: (Num i, Ord i) => i -> [a] -> [a]  
+take' n _  
+    | n <= 0   = []  --Empty list if 0 or less n    If n is greater than 0 go to next pattern
+take' _ []     = []  --If we try to take from an empty list we get an empty list  
+take' n (x:xs) = x : take' (n-1) xs --Take head then run take n-1 times on the tail
+
+--Reverse function using recursion
+reverse' :: [a] -> [a]  
+reverse' [] = []  
+reverse' (x:xs) = reverse' xs ++ [x]  --Get tail and add back head recursively
+
+--Repeat function using recursion (returns infinite list)
+repeat' :: a -> [a]  
+repeat' x = x:repeat' x  --Repeat the list
+
+--Zip function using recursion ('zips' two lists together) zip [1,2,3] [2,3] returns [(1,2),(2,3)]
+zip' :: [a] -> [b] -> [(a,b)]  
+zip' _ [] = []  --If we zip a list and empty list we get an empty list
+zip' [] _ = []  
+zip' (x:xs) (y:ys) = (x,y):zip' xs ys  --We pair up the heads of the list and recursiveley zip the tail
+
+--Elem function using recursion (Takes a list and checks if element is contained in it)
+elem' :: (Eq a) => a -> [a] -> Bool  
+elem' a [] = False  
+elem' a (x:xs)  
+    | a == x    = True  -- Stop if true
+    | otherwise = a `elem'` xs   -- Recursivekey run until end which will return false
+
+--Quicksort in Haskell
+quicksort :: (Ord a) => [a] -> [a]  
+quicksort [] = []  --Empty list
+quicksort (x:xs) =   
+    let smallerSorted = quicksort [a | a <- xs, a <= x]  --Numbers less than x
+        biggerSorted = quicksort [a | a <- xs, a > x]  --Numbers greater than x
+    in  smallerSorted ++ [x] ++ biggerSorted  --Combine lists greater and less than x
